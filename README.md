@@ -44,3 +44,13 @@ each change with valid and invalid input before committing.
 3. Open a terminal in the folder containing `main.py`.
 4. Run: `python main.py` (or `python3 main.py`)
 5. Follow the on-screen menu.
+
+## Feature Development Comparison
+
+**Manual-primary branch (`manual-feature`):** I added a "Remove a category" menu option so a mistyped category (like "fod") can be deleted along with its total. I implemented it as a small `remove_category()` function that uses a dictionary's `pop()` method and handles the empty-list and category-not-found cases. AI helped write the code, and I reviewed every line and tested it before opening the pull request.
+
+**AI-primary branch (`ai-feature`):** I wrote the specification and had Claude implement it. The feature saves expenses to `expenses.json` when the user quits and loads them at startup, falling back to an empty list if the file is missing or corrupted.
+
+**First attempt:** The AI-produced feature passed all three test cases on the first run, so I did not need to modify or reject any of its code. I still read the whole diff to check the file handling and error cases.
+
+**Confidence:** I felt more confident in the manual feature, because it was small enough that I could trace each line myself. For the AI feature I relied more on the test cases, since it was larger and I had not written it. Merging both features required resolving a conflict in the menu code.
