@@ -4,6 +4,11 @@
 #   * Summary is sorted from highest to lowest spending
 #   * New menu option that reports the top spending category
 
+import json
+import os
+
+DATA_FILE = "expenses.json"
+
 
 def add_expense(expenses, category, amount):
     """Add an amount to a category's running total.
@@ -73,8 +78,30 @@ def show_top_category(expenses):
     print(f"Top category: {top} (${expenses[top]:.2f}, {share:.1f}% of all spending)")
 
 
+def load_expenses():
+    """Load saved expenses from DATA_FILE. Return {} if missing or unreadable."""
+    if not os.path.exists(DATA_FILE):
+        return {}
+    try:
+        with open(DATA_FILE, "r") as f:
+            data = json.load(f)
+        return {str(category): float(total) for category, total in data.items()}
+    except (OSError, ValueError, TypeError, AttributeError):
+        print("Could not read saved expenses; starting with an empty list.")
+        return {}
+
+
+def save_expenses(expenses):
+    """Write the expenses dictionary to DATA_FILE as JSON."""
+    try:
+        with open(DATA_FILE, "w") as f:
+            json.dump(expenses, f, indent=2)
+    except OSError:
+        print("Warning: could not save expenses to disk.")
+
+
 def main():
-    expenses = {}  # all data lives in memory; it resets when the program exits
+    expenses = load_expenses()  # restore data saved by a previous run
 
     # Repeat the menu until the user selects the exit option.
     while True:
@@ -94,10 +121,8 @@ def main():
         elif choice == "3":
             show_top_category(expenses)
         elif choice == "4":
-            print("Goodbye!")
+            save_expenses(expenses)
+            print("Expenses saved. Goodbye!")
             break
         else:
             print("Invalid option, please enter 1, 2, 3, or 4.")
-
-
-main()
