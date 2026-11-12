@@ -1,4 +1,4 @@
-# Expense Tracker - Stage 2 (AI-assisted improvements)
+# Expense Tracker - Stage 2 (Manual improvements)
 # New in this version:
 #   * Input validation (no crashes on text, rejects zero/negative amounts)
 #   * Summary is sorted from highest to lowest spending
@@ -78,6 +78,21 @@ def show_top_category(expenses):
     print(f"Top category: {top} (${expenses[top]:.2f}, {share:.1f}% of all spending)")
 
 
+def remove_category(expenses):
+    """Delete a whole category (and its total) after the user types its name."""
+    if not expenses:
+        print("No expenses recorded yet.")
+        return
+
+    category = input("Category to remove: ").strip().lower()
+    if category in expenses:
+        # pop() removes the key from the dictionary and returns its value
+        removed_total = expenses.pop(category)
+        print(f"Removed '{category}' (${removed_total:.2f}).")
+    else:
+        print(f"Category '{category}' not found.")
+
+
 def load_expenses():
     """Load saved expenses from DATA_FILE. Return {} if missing or unreadable."""
     if not os.path.exists(DATA_FILE):
@@ -108,7 +123,8 @@ def main():
         print("\n1. Add expense")
         print("2. View summary")
         print("3. Show top spending category")
-        print("4. Quit")
+        print("4. Remove a category")
+        print("5. Quit")
         choice = input("Choose an option: ").strip()
 
         if choice == "1":
@@ -121,8 +137,13 @@ def main():
         elif choice == "3":
             show_top_category(expenses)
         elif choice == "4":
+            remove_category(expenses)
+        elif choice == "5":
             save_expenses(expenses)
             print("Expenses saved. Goodbye!")
             break
         else:
-            print("Invalid option, please enter 1, 2, 3, or 4.")
+            print("Invalid option, please enter 1, 2, 3, 4, or 5.")
+
+
+main()
